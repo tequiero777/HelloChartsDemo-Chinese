@@ -20,7 +20,7 @@
             android:layout_weight="1">
 
             <ImageView
-                android:id="@+id/iv__weather_info"
+                android:id="@+id/iv_weather_info"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
                 android:layout_centerHorizontal="true"
@@ -28,7 +28,7 @@
                 android:background="@null"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/icon_weather"
-                android:transitionName="line" />
+                android:transitionName="weather" />
 
         </RelativeLayout>
 

@@ -1,6 +1,9 @@
 package com.tianjian.hellochartsdemo_chinese.ui.activity.other;
 
+import android.annotation.TargetApi;
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,7 +22,7 @@ import com.tianjian.hellochartsdemo_chinese.ui.activity.scene.WeatherActivity;
  */
 public class UseSceneActivity extends BaseActivity {
 
-    private ImageView titleImage;
+    private ImageView titleImage,weatherImage;
 
     private CardView weatherCard;
     private CardView asqCard;
@@ -43,6 +46,8 @@ public class UseSceneActivity extends BaseActivity {
         asqCard = (CardView) findViewById(R.id.cv_asq);
         countCard = (CardView) findViewById(R.id.cv_flow_count);
         moreCard = (CardView) findViewById(R.id.cv_wait_add);
+
+        weatherImage = (ImageView) findViewById(R.id.iv_weather_info);
     }
 
     @Override
@@ -59,10 +64,14 @@ public class UseSceneActivity extends BaseActivity {
     }
 
     @Override
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void processClick(View v) {
         switch (v.getId()) {
             case R.id.cv_weather_info:
-                startActivity(new Intent(this, WeatherActivity.class));
+//                startActivity(new Intent(this, WeatherActivity.class));
+//                break;
+                Intent i1 = new Intent(this, WeatherActivity.class);
+                startActivity(i1, ActivityOptions.makeSceneTransitionAnimation(this, weatherImage, "weather").toBundle());
                 break;
             default:
                 Toast.makeText(this, "暂未添加此功能", Toast.LENGTH_SHORT).show();
