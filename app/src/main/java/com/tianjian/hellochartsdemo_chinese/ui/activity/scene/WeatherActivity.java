@@ -1,5 +1,7 @@
 package com.tianjian.hellochartsdemo_chinese.ui.activity.scene;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -12,6 +14,22 @@ import com.tianjian.hellochartsdemo_chinese.adapter.WeatherRecyclerAdapter;
 import com.tianjian.hellochartsdemo_chinese.ui.activity.base.BaseActivity;
 import com.tianjian.hellochartsdemo_chinese.ui.view.BlurredView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
+
+import static android.R.attr.button;
+
 
 /**
  * @author xiarui 2016.09.09
@@ -22,21 +40,13 @@ public class WeatherActivity extends BaseActivity {
     /*========== 控件相关 ===========*/
     private BlurredView weatherBView;           //背景模糊图
     private RecyclerView weatherRView;          //滑动列表
-    private TextView tempText;                  //温度
-    private TextView weatherText;               //天气
-    private TextView windText;                  //风向
-    private TextView windPowerText;             //风力
-    private TextView humPowerText;              //湿度
-    private TextView flPowerText;               //体感温度
-
-    /*========== 数据相关 ===========*/
 
 
     /*========== 其他 ===========*/
     private int mScrollerY;                     //滚动距离
     private int mAlpha;                         //透明值
-    private static final String weather_url = "https://api.heweather.com/x3/weather?cityid=CN101190101&key=573a3ba3c95a43ad94e70c34610720f9";
-
+    private static final String weather_url = "http://wthrcdn.etouch.cn/weather_mini?city=%E9%87%8D%E5%BA%86";
+    private JSONObject jo;
     @Override
     public int getLayoutId() {
         return R.layout.activity_weather;
@@ -48,22 +58,67 @@ public class WeatherActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
-        tempText = (TextView) findViewById(R.id.tv_basic_temp);
-        weatherText = (TextView) findViewById(R.id.tv_basic_weather);
-        windText = (TextView) findViewById(R.id.tv_basic_wind);
-        windPowerText = (TextView) findViewById(R.id.tv_basic_wind_power);
-        humPowerText = (TextView) findViewById(R.id.tv_basic_hum_power);
-        flPowerText = (TextView) findViewById(R.id.tv_basic_fl_power);
-
         weatherBView = (BlurredView) findViewById(R.id.bv_weather);
         weatherRView = (RecyclerView) findViewById(R.id.rv_weather);
         weatherRView.setLayoutManager(new LinearLayoutManager(this));
-        weatherRView.setAdapter(new WeatherRecyclerAdapter(this));
+
     }
 
     @Override
     public void initData() {
-        //TODO:请求网络数据
+        new Thread()
+        {
+            public void run()
+            {
+                try {
+                    jo = readJsonFromUrl(weather_url);
+                    Message message=new Message();
+                    message.what=1;
+                    mHandler.sendMessage(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public Handler mHandler=new Handler() {
+        public void handleMessage(Message msg)
+        {
+            switch(msg.what)
+            {
+                case 1:
+                    weatherRView.setAdapter(new WeatherRecyclerAdapter(WeatherActivity.this,jo));
+                    System.out.println(jo.toString());
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    private static String readAll(Reader rd) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            sb.append((char) cp);
+        }
+        return sb.toString();
+    }
+
+    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+        InputStream is = new URL(url).openStream();
+        try {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String jsonText = readAll(rd);
+            JSONObject json = new JSONObject(jsonText);
+            return json;
+        } finally {
+            is.close();
+        }
     }
 
     @Override

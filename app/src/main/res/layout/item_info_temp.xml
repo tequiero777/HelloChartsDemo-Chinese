@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.2dp"
         android:layout_margin="5dp"
-        android:background="#ffffff" />
+        android:background="#00ffffff" />
 
     <lecho.lib.hellocharts.view.ColumnChartView
         android:id="@+id/ccv_weather_hourly"

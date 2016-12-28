@@ -45,7 +45,7 @@ public class QueRepActivity extends BaseActivity {
     @Override
     public void initData() {
         queRepRView.setLayoutManager(new LinearLayoutManager(this));
-        queRepRView.setAdapter(new WeatherRecyclerAdapter(this));
+        queRepRView.setAdapter(new WeatherRecyclerAdapter(this,null));
     }
 
     @Override
