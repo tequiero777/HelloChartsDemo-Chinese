@@ -222,8 +222,8 @@ public class WeatherRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             weatherText.setText(weather.getData().getCity()+" | "+weather.getData().getForecast().get(0).getType());
             windText.setText(weather.getData().getForecast().get(0).getFengxiang());
             windPowerText.setText(weather.getData().getForecast().get(0).getFengli());
-            humPowerText.setText(weather.getData().getForecast().get(0).getHigh().replace("高温",""));
-            flPowerText.setText(weather.getData().getForecast().get(0).getLow().replace("低温",""));
+            humPowerText.setText(weather.getData().getForecast().get(0).getHigh().replace("高温","").trim());
+            flPowerText.setText(weather.getData().getForecast().get(0).getLow().replace("低温","").trim());
             infoText.setText(weather.getData().getGanmao());
 
         }
