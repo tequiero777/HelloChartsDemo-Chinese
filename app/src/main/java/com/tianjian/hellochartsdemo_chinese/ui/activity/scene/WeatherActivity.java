@@ -46,6 +46,7 @@ public class WeatherActivity extends BaseActivity {
     private int mScrollerY;                     //滚动距离
     private int mAlpha;                         //透明值
     private static final String weather_url = "http://wthrcdn.etouch.cn/weather_mini?city=%E9%87%8D%E5%BA%86";
+//    private static final String weather_url = http://wthrcdn.etouch.cn/WeatherApi?city=%E9%87%8D%E5%BA%86
     private JSONObject jo;
     @Override
     public int getLayoutId() {
@@ -90,7 +91,7 @@ public class WeatherActivity extends BaseActivity {
             switch(msg.what)
             {
                 case 1:
-                    weatherRView.setAdapter(new WeatherRecyclerAdapter(WeatherActivity.this,jo));
+                    weatherRView.setAdapter(new WeatherRecyclerAdapter(WeatherActivity.this,jo,weatherRView));
                     System.out.println(jo.toString());
                     break;
                 default:
